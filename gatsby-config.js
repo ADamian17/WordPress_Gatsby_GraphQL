@@ -6,6 +6,7 @@ module.exports = {
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-styled-components`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -31,7 +32,7 @@ module.exports = {
       resolve: "gatsby-source-wordpress",
       options: {
         minimizeDeprecationNotice: true,
-        baseUrl: "gatsby-wordpress-course.local",
+        baseUrl: "wpgraphql.local",
         protocol: "http",
         hostingWPCOM: false,
         useACF: false,
@@ -41,9 +42,13 @@ module.exports = {
         includedRoutes: [
           "**/categories",
           "**/posts",
+          "**/*/*/portfolio",
+          "**/*/*/logo",
+          "**/*/*/favicon",
           "**/pages",
           "**/media",
           "**/tags",
+          "**/menus",
           "**/taxonomies",
           "**/users",
         ],
