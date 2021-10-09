@@ -16,6 +16,13 @@ const FeaturedImg = styled.figure`
 export default ({ pageContext }) => (
   <Layout>
     <h1 dangerouslySetInnerHTML={{__html: pageContext.title}}/>
+    <strong>
+      WebSite Url:
+    </strong>
+
+    <a href={pageContext.acf.portfolio_url} target="_blank" rel="noreferrer">
+      {pageContext.acf.portfolio_url}
+    </a>
     <FeaturedImg>
       <img src={pageContext.featured_media.source_url} alt="thumbnail" />
     </FeaturedImg>

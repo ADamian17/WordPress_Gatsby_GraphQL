@@ -88,6 +88,9 @@ exports.createPages = ({ graphql, actions }) => {
                     featured_media {
                       source_url
                     }
+                    acf {
+                      portfolio_url
+                    }
                   }
                 }
               }
@@ -109,9 +112,64 @@ exports.createPages = ({ graphql, actions }) => {
               context: edge.node,
             })
           })
-          resolve()
         })
       })
     // ==== END PORTFOLIO ====
+    // ==== POST ====
+    .then(() => {
+      graphql(`
+        {
+          allWordpressPost {
+            edges {
+              node {
+                id
+                wordpress_id
+                slug
+                title
+                content
+                excerpt
+                date(formatString: "Do MMM YYYY HH:mm")
+              }
+            }
+          }
+        }
+      `)
+      .then((result) => {
+        if(result.errors) {
+          console.log(result.errors);
+          reject(result.errors)
+        }
+        
+        const posts = result.data.allWordpressPost.edges;
+        const postOffset = 2;
+        const pages = Math.ceil(posts.length / postOffset) 
+        const postTemplate = path.resolve('./src/templates/blogPostList.js');
+  
+        _.chunk(posts, postOffset).forEach((page, idx) => {
+          createPage({
+            component: slash(postTemplate),
+            path: idx === 0 ? '/blogs' : `/blogs/${idx + 1}`,
+            context: {
+              posts: page,
+              pages,
+              currentPage: idx + 1
+            }
+          });
+        });
+
+        const pageTemplate =  path.resolve("./src/templates/page.js");
+
+        _.each(posts, (post) => {
+          createPage({
+            path: `/posts/${post.node.slug}`,
+            component: slash(pageTemplate),
+            context: post.node
+          })
+        });
+        
+        resolve();
+      });
+      // ==== POST ====
+    });
   })
 }
